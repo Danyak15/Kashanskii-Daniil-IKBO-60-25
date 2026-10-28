@@ -3,6 +3,8 @@ package org.example
 import java.awt.Color
 import java.awt.Font
 import java.awt.event.ActionEvent
+import java.io.File
+import java.io.IOException
 import java.net.InetAddress
 import javax.swing.AbstractAction
 import javax.swing.JFrame
@@ -11,7 +13,9 @@ import javax.swing.JTextArea
 import javax.swing.KeyStroke
 import kotlin.system.exitProcess
 
-class TerminalWindow : JFrame() {
+class TerminalWindow(
+    private val config: EmulatorConfig,
+) : JFrame() {
     private val username = System.getProperty("user.name")
     private val hostname = InetAddress.getLocalHost().hostName
     private val terminal = JTextArea()
@@ -46,6 +50,8 @@ class TerminalWindow : JFrame() {
         terminal.text = prompt
         inputStart = terminal.document.length
         terminal.caretPosition = inputStart
+
+        readStartupScript()
     }
 
     private fun handleEnter() {
@@ -70,6 +76,33 @@ class TerminalWindow : JFrame() {
             "cd" -> terminal.append("cd: ${command.args}\n")
             "exit" -> exitProcess(0)
             else -> terminal.append("Ошибка: неизвестная команда '${command.name}'\n")
+        }
+    }
+
+    private fun readStartupScript() {
+        try {
+            val lines = File(config.scriptPath).readLines()
+
+            for (line in lines) {
+                val command = line.trim()
+
+                if (command.isEmpty() || command.startsWith("//")) {
+                    continue
+                }
+
+                terminal.append("$command\n")
+                val parsedCommand = CommandParser.parse(command)
+
+                if (parsedCommand != null) {
+                    executeCommand(parsedCommand)
+                }
+
+                terminal.append(prompt)
+                inputStart = terminal.document.length
+                terminal.caretPosition = inputStart
+            }
+        } catch (e: IOException) {
+            println("Ошибка чтения скрипта: ${e.message}")
         }
     }
 }

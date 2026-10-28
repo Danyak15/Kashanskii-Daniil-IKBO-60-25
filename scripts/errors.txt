@@ -1,0 +1,4 @@
+ // Проверка обработки ошибок
+lsl
+hello
+unknown documents

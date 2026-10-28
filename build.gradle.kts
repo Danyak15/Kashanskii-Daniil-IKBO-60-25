@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.4.10"
+    application
 }
 
 group = "org.example"
@@ -19,4 +20,15 @@ kotlin {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass.set("org.example.MainKt")
+}
+
+tasks.named<JavaExec>("run") {
+    jvmArgs(
+        "-Dstdout.encoding=UTF-8",
+        "-Dstderr.encoding=UTF-8"
+    )
 }
