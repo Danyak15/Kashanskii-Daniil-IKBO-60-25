@@ -11,6 +11,9 @@ import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.KeyStroke
+import javax.swing.text.AbstractDocument
+import javax.swing.text.AttributeSet
+import javax.swing.text.DocumentFilter
 import kotlin.system.exitProcess
 
 class TerminalWindow(
@@ -56,6 +59,7 @@ class TerminalWindow(
         loadVfs()
 
         readStartupScript()
+        protectHistory()
     }
 
     private fun loadVfs() {
@@ -136,6 +140,45 @@ class TerminalWindow(
             }
         } catch (e: IOException) {
             println("Ошибка чтения скрипта: ${e.message}")
+        }
+    }
+
+    private fun protectHistory() {
+        val document = terminal.document as AbstractDocument
+
+        document.documentFilter = object : DocumentFilter() {
+            override fun insertString(
+                fb: FilterBypass,
+                offset: Int,
+                string: String?,
+                attr: AttributeSet?
+            ) {
+                if (offset >= inputStart) {
+                    super.insertString(fb, offset, string, attr)
+                }
+            }
+
+            override fun remove(
+                fb: FilterBypass,
+                offset: Int,
+                length: Int
+            ) {
+                if (offset >= inputStart) {
+                    super.remove(fb, offset, length)
+                }
+            }
+
+            override fun replace(
+                fb: FilterBypass,
+                offset: Int,
+                length: Int,
+                text: String?,
+                attrs: AttributeSet?
+            ) {
+                if (offset >= inputStart) {
+                    super.replace(fb, offset, length, text, attrs)
+                }
+            }
         }
     }
 }
