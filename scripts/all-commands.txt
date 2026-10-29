@@ -1,0 +1,9 @@
+// Проверка всех команд этапов 1–3
+ls
+ls -l
+cd documents
+cd
+unknown
+vfs-init extra
+vfs-init
+exit

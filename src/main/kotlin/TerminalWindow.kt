@@ -20,6 +20,8 @@ class TerminalWindow(
     private val hostname = InetAddress.getLocalHost().hostName
     private val terminal = JTextArea()
 
+    private val vfs = VirtualFileSystem(config.vfsPath)
+
     private val prompt = "$username@$hostname:~$ "
     private var inputStart = 0
 
@@ -51,7 +53,23 @@ class TerminalWindow(
         inputStart = terminal.document.length
         terminal.caretPosition = inputStart
 
+        loadVfs()
+
         readStartupScript()
+    }
+
+    private fun loadVfs() {
+        try {
+            vfs.load()
+            terminal.append("VFS: ${vfs.directoryCount} каталогов, ${vfs.fileCount} файлов\n")
+
+            for ((path, isDirectory) in vfs.allEntries()) {
+                val type = if (isDirectory) "DIR " else "FILE"
+                terminal.append("  $type $path\n")
+            }
+        } catch (e: IOException) {
+            terminal.append("Ошибка загрузки VFS: ${e.message}\n")
+        }
     }
 
     private fun handleEnter() {
@@ -75,7 +93,22 @@ class TerminalWindow(
             "ls" -> terminal.append("ls: ${command.args}\n")
             "cd" -> terminal.append("cd: ${command.args}\n")
             "exit" -> exitProcess(0)
+            "vfs-init" -> resetVfs(command.args)
             else -> terminal.append("Ошибка: неизвестная команда '${command.name}'\n")
+        }
+    }
+
+    private fun resetVfs(args: List<String>) {
+        if (args.isNotEmpty()) {
+            terminal.append("Ошибка: vfs-init не принимает аргументы\n")
+            return
+        }
+
+        try {
+            vfs.reset()
+            terminal.append("VFS сброшена: данные в памяти и CSV очищены\n")
+        } catch (e: IOException) {
+            terminal.append("Ошибка сброса VFS: ${e.message}\n")
         }
     }
 

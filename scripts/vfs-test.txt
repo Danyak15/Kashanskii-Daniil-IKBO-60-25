@@ -1,0 +1,3 @@
+// Проверка команды vfs-init
+vfs-init extra
+vfs-init
