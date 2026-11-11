@@ -9,10 +9,31 @@ fun main() {
         return
     }
 
-    println("package_name = ${config.packageName}")
-    println("repository = ${config.repository}")
-    println("test_mode = ${config.testMode}")
-    println("version = ${config.version}")
-    println("ascii_tree = ${config.asciiTree}")
-    println("max_depth = ${config.maxDepth}")
+    val json = try {
+        NpmClient.fetch(
+            config.packageName,
+            config.repository,
+            config.version
+        )
+    } catch (e: Exception) {
+        System.err.println("Registry error: ${e.message}")
+        return
+    }
+
+    val dependencies = try {
+        NpmParser.parseDependencies(json)
+    } catch (e: Exception) {
+        System.err.println("JSON parsing error: ${e.message}")
+        return
+    }
+
+    println("Direct dependencies for ${config.packageName}@${config.version}:")
+
+    if (dependencies.isEmpty()) {
+        println("No dependencies")
+    } else {
+        dependencies.toSortedMap().forEach { (name, version) ->
+            println("$name: $version")
+        }
+    }
 }
