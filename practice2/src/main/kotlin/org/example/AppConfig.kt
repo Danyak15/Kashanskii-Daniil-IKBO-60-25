@@ -3,7 +3,6 @@ package org.example
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 /**
  * Хранит параметры анализа зависимостей npm-пакета.
  *
@@ -13,6 +12,7 @@ import kotlinx.serialization.Serializable
  * @property version версия анализируемого пакета
  * @property asciiTree необходимость вывода ASCII-дерева
  * @property maxDepth максимальная глубина анализа зависимостей
+ * @property showLoadOrder необходимость вывода порядка загрузки зависимостей
  */
 @Serializable
 data class AppConfig(
@@ -32,5 +32,8 @@ data class AppConfig(
     val asciiTree: Boolean,
 
     @SerialName("max_depth")
-    val maxDepth: Int
+    val maxDepth: Int,
+
+    @SerialName("show_load_order")
+    val showLoadOrder: Boolean = false
 )

@@ -145,6 +145,23 @@ class ConfigLoaderTest {
         assertEquals("tests/graph.txt", config.repository)
     }
 
+    @Test
+    fun disablesLoadOrderByDefault() {
+        val config = ConfigLoader.load(VALID_CONFIG)
+
+        assertFalse(config.showLoadOrder)
+    }
+
+    @Test
+    fun enablesLoadOrder() {
+        val yaml = File(VALID_CONFIG).readText(Charsets.UTF_8) +
+                "\nshow_load_order: true\n"
+
+        val config = loadText(yaml)
+
+        assertTrue(config.showLoadOrder)
+    }
+
     /**
      * Заменяет значение параметра в правильной конфигурации
      * и загружает полученный YAML.

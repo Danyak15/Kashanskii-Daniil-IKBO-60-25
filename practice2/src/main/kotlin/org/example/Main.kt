@@ -31,6 +31,10 @@ private fun runTestMode(config: AppConfig) {
     for ((name, dependencies) in graph) {
         println("$name: ${dependencies.joinToString(" ")}")
     }
+
+    if (config.showLoadOrder) {
+        println("BFS order: ${graph.keys.joinToString(" -> ")}")
+    }
 }
 
 /** Строит граф зависимостей из npm Registry. */
@@ -39,9 +43,11 @@ private fun runRegistryMode(config: AppConfig) {
         config.packageName to config.version
     )
 
+    val requestOrder = mutableListOf<String>()
+
     val graph = try {
         DependencyGraph.build(config.packageName, config.maxDepth) { name ->
-            loadRegistryDependencies(name, config, versions)
+            loadRegistryDependencies(name, config, versions, requestOrder)
         }
     } catch (e: Exception) {
         System.err.println("Registry error: ${e.message}")
@@ -53,13 +59,18 @@ private fun runRegistryMode(config: AppConfig) {
     for ((name, dependencies) in graph) {
         println("$name: ${dependencies.joinToString(" ")}")
     }
+
+    if (config.showLoadOrder) {
+        println("Registry request order: ${requestOrder.joinToString(" -> ")}")
+    }
 }
 
 /** Получает прямые зависимости очередного npm-пакета. */
 private fun loadRegistryDependencies(
     name: String,
     config: AppConfig,
-    versions: MutableMap<String, String?>
+    versions: MutableMap<String, String?>,
+    requestOrder: MutableList<String>
 ): List<String> {
     val version = versions[name] ?: run {
         System.err.println("Skipped $name: unsupported version")
@@ -67,6 +78,8 @@ private fun loadRegistryDependencies(
     }
 
     val dependencies = try {
+        requestOrder.add("$name@$version")
+
         val json = NpmClient.fetch(name, config.repository, version)
         NpmParser.parseDependencies(json)
     } catch (e: Exception) {

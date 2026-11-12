@@ -3,4 +3,5 @@ repository: "https://registry.npmjs.org"
 test_mode: false
 version: "4.18.2"
 ascii_tree: true
-max_depth: 3
+max_depth: 2
+show_load_order: true
