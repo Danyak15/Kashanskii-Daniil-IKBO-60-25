@@ -1,4 +1,4 @@
-package org.example
+package org.example.config
 
 import com.charleskorn.kaml.Yaml
 import java.io.File
@@ -27,7 +27,11 @@ object ConfigLoader {
         return config
     }
 
-    /** Проверяет допустимость значений параметров конфигурации. */
+    /**
+     * Проверяет допустимость параметров конфигурации.
+     *
+     * @param config конфигурация приложения
+     */
     private fun validate(config: AppConfig) {
         require(config.packageName.isNotBlank()) {
             "package_name: package name cannot be empty"
@@ -49,7 +53,12 @@ object ConfigLoader {
         }
     }
 
-    /** Проверяет наличие схемы HTTP(S) и имени сервера в адресе. */
+    /**
+     * Проверяет корректность HTTP(S)-адреса репозитория.
+     *
+     * @param value проверяемый адрес
+     * @return true, если адрес содержит допустимую схему и имя сервера
+     */
     private fun isValidUrl(value: String): Boolean {
         val uri = try {
             URI(value)

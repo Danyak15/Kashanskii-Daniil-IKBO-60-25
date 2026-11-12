@@ -1,4 +1,4 @@
-package org.example
+package org.example.npm
 
 /** Извлекает конкретную версию из требования npm. */
 object VersionResolver {
@@ -7,7 +7,12 @@ object VersionResolver {
         "npm:", "file:", "git+", "github:"
     )
 
-    /** Возвращает версию или null для неподдерживаемого требования. */
+    /**
+     * Извлекает версию из требования npm.
+     *
+     * @param requirement требование к версии
+     * @return версия пакета или null для неподдерживаемого требования
+     */
     fun resolve(requirement: String): String? {
         val value = requirement.trim()
 

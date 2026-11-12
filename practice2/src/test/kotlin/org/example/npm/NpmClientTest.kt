@@ -1,4 +1,4 @@
-package org.example
+package org.example.npm
 
 import com.sun.net.httpserver.HttpServer
 import java.io.IOException
@@ -60,12 +60,23 @@ class NpmClientTest {
         }
     }
 
-    /** Возвращает адрес локального тестового сервера. */
+    /**
+     * Формирует адрес локального тестового сервера.
+     *
+     * @param server HTTP-сервер
+     * @return URL сервера
+     */
     private fun serverUrl(server: HttpServer): String {
         return "http://127.0.0.1:${server.address.port}"
     }
 
-    /** Запускает локальный HTTP-сервер с заданным ответом. */
+    /**
+     * Запускает локальный HTTP-сервер для тестирования.
+     *
+     * @param expectedPath ожидаемый путь запроса
+     * @param statusCode HTTP-код ответа
+     * @return запущенный тестовый сервер
+     */
     private fun startServer(
         expectedPath: String,
         statusCode: Int = HttpURLConnection.HTTP_OK

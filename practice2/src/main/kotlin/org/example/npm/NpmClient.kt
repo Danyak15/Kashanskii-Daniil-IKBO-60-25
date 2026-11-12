@@ -1,4 +1,4 @@
-package org.example
+package org.example.npm
 
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -13,7 +13,14 @@ import java.nio.charset.StandardCharsets
 object NpmClient {
     private val client = HttpClient.newHttpClient()
 
-    /** Получает сведения о конкретной версии пакета. */
+    /**
+     * Получает сведения о конкретной версии npm-пакета.
+     *
+     * @param packageName имя пакета
+     * @param repository адрес npm-репозитория
+     * @param version версия пакета
+     * @return JSON-ответ репозитория
+     */
     fun fetch(
         packageName: String,
         repository: String,
@@ -26,7 +33,12 @@ object NpmClient {
         return sendRequest(url)
     }
 
-    /** Выполняет HTTP-запрос и возвращает тело ответа. */
+    /**
+     * Выполняет HTTP-запрос к репозиторию.
+     *
+     * @param url адрес запроса
+     * @return тело HTTP-ответа
+     */
     private fun sendRequest(url: String): String {
         val request = HttpRequest.newBuilder()
             .uri(URI.create(url))

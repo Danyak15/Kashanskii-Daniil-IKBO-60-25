@@ -1,4 +1,4 @@
-package org.example
+package org.example.graph
 
 import java.io.File
 import java.io.FileNotFoundException
@@ -67,8 +67,10 @@ class TestGraphLoaderTest {
     }
 
     /**
-     * Создаёт временный файл с тестовым графом,
-     * загружает его и удаляет после проверки.
+     * Создаёт временный файл с графом и загружает его.
+     *
+     * @param content текстовое описание графа
+     * @return загруженный граф зависимостей
      */
     private fun loadText(content: String): Map<String, List<String>> {
         val file = File.createTempFile("graph-test-", ".txt")

@@ -1,13 +1,19 @@
-package org.example
+package org.example.graph
 
 import java.io.File
 
 /** Загружает тестовый граф зависимостей из текстового файла. */
 object TestGraphLoader {
+    private const val GRAPH_PARTS = 2
     private val namePattern = Regex("[A-Z]+")
     private val spaces = Regex("\\s+")
 
-    /** Возвращает список зависимостей для каждого пакета. */
+    /**
+     * Загружает тестовый граф зависимостей из файла.
+     *
+     * @param path путь к текстовому файлу
+     * @return граф зависимостей
+     */
     fun load(path: String): Map<String, List<String>> {
         val graph = linkedMapOf<String, List<String>>()
 
@@ -15,7 +21,7 @@ object TestGraphLoader {
             if (line.isBlank()) return@forEachLine
 
             val parts = line.split(":", limit = 2)
-            require(parts.size == 2) {
+            require(parts.size == GRAPH_PARTS) {
                 "Invalid graph line: $line"
             }
 

@@ -1,10 +1,17 @@
-package org.example
+package org.example.graph
 
 /** Строит граф зависимостей алгоритмом BFS без рекурсии. */
 object DependencyGraph {
     private const val MIN_DEPTH = 0
 
-    /** Строит граф из заранее загруженных зависимостей. */
+    /**
+     * Строит граф из заранее загруженных зависимостей.
+     *
+     * @param source зависимости пакетов
+     * @param start начальный пакет
+     * @param maxDepth максимальная глубина обхода
+     * @return граф зависимостей в порядке BFS
+     */
     fun build(
         source: Map<String, List<String>>,
         start: String,

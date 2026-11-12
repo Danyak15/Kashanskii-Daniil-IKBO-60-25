@@ -1,4 +1,4 @@
-package org.example
+package org.example.config
 
 import java.io.File
 import java.io.FileNotFoundException
@@ -162,9 +162,22 @@ class ConfigLoaderTest {
         assertTrue(config.showLoadOrder)
     }
 
+    @Test
+    fun rejectsInvalidLoadOrderType() {
+        val yaml = File(VALID_CONFIG).readText(Charsets.UTF_8) +
+                "\nshow_load_order: invalid\n"
+
+        assertFailsWith<Exception> {
+            loadText(yaml)
+        }
+    }
+
     /**
-     * Заменяет значение параметра в правильной конфигурации
-     * и загружает полученный YAML.
+     * Загружает тестовую конфигурацию с изменённым параметром.
+     *
+     * @param key имя изменяемого параметра
+     * @param value новое значение параметра
+     * @return загруженная конфигурация
      */
     private fun loadWithValue(key: String, value: String): AppConfig {
         val lines = File(VALID_CONFIG).readLines(Charsets.UTF_8)
@@ -181,8 +194,10 @@ class ConfigLoaderTest {
     }
 
     /**
-     * Создаёт временный YAML-файл, загружает его и удаляет
-     * после завершения проверки.
+     * Загружает YAML из временного файла.
+     *
+     * @param content содержимое конфигурации
+     * @return загруженная конфигурация
      */
     private fun loadText(content: String): AppConfig {
         val file = File.createTempFile("config-test-", ".yaml")

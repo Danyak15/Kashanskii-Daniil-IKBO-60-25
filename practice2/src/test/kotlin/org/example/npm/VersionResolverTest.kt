@@ -1,4 +1,4 @@
-package org.example
+package org.example.npm
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -6,7 +6,6 @@ import kotlin.test.assertNull
 
 /** Проверяет упрощённое извлечение версий npm-зависимостей. */
 class VersionResolverTest {
-
     @Test
     fun extractsExactVersion() {
         assertEquals("1.6.8", VersionResolver.resolve("1.6.8"))

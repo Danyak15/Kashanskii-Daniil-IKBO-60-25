@@ -1,7 +1,7 @@
-package_name: "express"
+package_name: "debug"
 repository: "https://registry.npmjs.org"
 test_mode: false
-version: "4.18.2"
+version: "2.6.9"
 ascii_tree: true
 max_depth: 2
 show_load_order: true
