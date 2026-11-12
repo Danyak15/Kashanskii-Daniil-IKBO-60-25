@@ -13,17 +13,21 @@ import java.nio.charset.StandardCharsets
 object NpmClient {
     private val client = HttpClient.newHttpClient()
 
-    /** Запрашивает сведения о конкретной версии пакета. */
+    /** Получает сведения о конкретной версии пакета. */
     fun fetch(
         packageName: String,
         repository: String,
         version: String
     ): String {
-        val encodedName = URLEncoder.encode(packageName, StandardCharsets.UTF_8)
+        val name = URLEncoder.encode(packageName, StandardCharsets.UTF_8)
         val encodedVersion = URLEncoder.encode(version, StandardCharsets.UTF_8)
+        val url = "${repository.trimEnd('/')}/$name/$encodedVersion"
 
-        val url = "${repository.trimEnd('/')}/$encodedName/$encodedVersion"
+        return sendRequest(url)
+    }
 
+    /** Выполняет HTTP-запрос и возвращает тело ответа. */
+    private fun sendRequest(url: String): String {
         val request = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .GET()
