@@ -60,14 +60,12 @@ class VirtualFileSystem(
     }
 
     private fun parseEntry(line: String, lineNumber: Int): VfsEntry {
-        val columns = line.split(',', limit = 3)
-        if (columns.size != 3) throw IOException("Неверная строка CSV: $lineNumber")
+        val columns = line.split(',', limit = CSV_COLUMNS)
+        if (columns.size != CSV_COLUMNS) throw IOException("Неверная строка CSV: $lineNumber")
 
         val (path, type, encoded) = columns
 
-        if (path == "/" || !path.startsWith('/') || path.endsWith('/') || "//" in path ||
-            path.split('/').any { it == "." || it == ".." }
-        ) {
+        if (!isValidPath(path)) {
             throw IOException("Неверный путь в строке $lineNumber: $path")
         }
 
@@ -89,7 +87,18 @@ class VirtualFileSystem(
         return VfsEntry(path, type == "directory", bytes)
     }
 
+    private fun isValidPath(path: String): Boolean {
+        if (path == "/" || !path.startsWith('/') || path.endsWith('/')) {
+            return false
+        }
+
+        if ("//" in path) return false
+
+        return path.split('/').none { it == "." || it == ".." }
+    }
+
     private companion object {
         const val CSV_HEADER = "path,type,content"
+        const val CSV_COLUMNS = 3
     }
 }

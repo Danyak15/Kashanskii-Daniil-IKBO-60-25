@@ -2,8 +2,10 @@ package org.example
 
 import javax.swing.SwingUtilities
 
+private const val REQUIRED_ARGUMENTS = 2
+
 fun main(args: Array<String>) {
-    if (args.size != 2) {
+    if (args.size != REQUIRED_ARGUMENTS) {
         println("Ошибка: ожидается два аргумента")
         return
     }
